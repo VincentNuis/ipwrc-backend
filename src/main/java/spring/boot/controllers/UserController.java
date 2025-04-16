@@ -12,7 +12,7 @@ import java.util.Optional;
 @RestController
 public class UserController {
 
-    private UserService service;
+    private final UserService service;
 
     public UserController(@Qualifier("primary") UserService userService){
         this.service = userService;
