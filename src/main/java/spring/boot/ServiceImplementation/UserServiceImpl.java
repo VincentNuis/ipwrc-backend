@@ -4,6 +4,7 @@ package spring.boot.ServiceImplementation;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import spring.boot.Entity.UserEntity;
 import spring.boot.Repository.UserRepository;
 import spring.boot.Role.UserRole;
 import spring.boot.Service.UserService;
+import spring.boot.jwt.JwtTokenProvider;
 
 import java.security.Key;
 import java.sql.Date;
@@ -22,12 +24,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final Key key = Jwts.SIG.HS512.key().build();
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -57,12 +64,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        String token = Jwts.builder()
-                .setSubject(email)
-                .claim("roles", userOpt.get().getRoles())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(key)
-                .compact();
+        String token = jwtTokenProvider.generateToken(email, userOpt.get().getRoles());
 
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
