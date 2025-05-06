@@ -1,9 +1,16 @@
-api:
-  endpoint: "http://worldtimeapi.org/api/timezone/"
-  contintent: "Europe"
-
 spring:
   datasource:
     url: jdbc:mysql://mysql-school-webshop-school-webshop.d.aivencloud.com:22637/webshop
     username: avnadmin
     password: AVNS_mJkYLpEnF07B4xvnNwE
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  profiles:
+    active: dev
+
+
