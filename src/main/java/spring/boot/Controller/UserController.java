@@ -1,5 +1,6 @@
 package spring.boot.Controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.boot.DTO.UserDTO;
@@ -22,6 +23,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserEntity user) {
+        System.out.println("Registrating new User");
         return ResponseEntity.ok(userService.register(user));
     }
 
@@ -34,5 +36,14 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         System.out.println("Sending: " + userService.getAllUsers());
         return userService.getAllUsers();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+        boolean isRemoved = userService.deleteUser(id);
+        if (!isRemoved) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

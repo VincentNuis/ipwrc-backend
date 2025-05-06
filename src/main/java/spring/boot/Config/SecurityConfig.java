@@ -1,6 +1,7 @@
 package spring.boot.Config;
 
 import io.jsonwebtoken.Jwt;
+import org.apache.tools.ant.taskdefs.condition.Http;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,8 +38,12 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/login", "/api/users/register", "/public/**").permitAll()  // Open voor iedereen
-                        .requestMatchers(HttpMethod.GET, "/api/users/users").hasRole("ADMIN") // Alleen voor ADMIN
+                        .requestMatchers("/api/users/login", "/api/users/register", "/public/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()// Open voor iedereen
+                        .requestMatchers(HttpMethod.GET, "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN") // Alleen voor ADMIN
                         .anyRequest().authenticated()  // Andere routes moeten geauthenticeerd zijn
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

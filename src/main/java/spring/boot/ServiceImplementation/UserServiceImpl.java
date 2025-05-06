@@ -2,8 +2,6 @@ package spring.boot.ServiceImplementation;
 
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +14,6 @@ import spring.boot.Service.UserService;
 import spring.boot.jwt.JwtTokenProvider;
 
 import java.security.Key;
-import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -39,6 +36,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity register(UserEntity user) {
+
+        Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("User with this email already exists");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
@@ -58,7 +61,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> login(String email, String rawPassword) {
-        System.out.println(email + " " + rawPassword);
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty() || !passwordEncoder.matches(rawPassword, userOpt.get().getPassword())) {
             return ResponseEntity.status(401).body("Invalid credentials");
@@ -84,5 +86,16 @@ public class UserServiceImpl implements UserService {
         }
 
         return userDTOs;
+    }
+
+    @Override
+    public boolean deleteUser(Long id) {
+        // Controleer of de gebruiker bestaat
+        if (userRepository.existsById(id)) {
+            // Verwijder de gebruiker als deze bestaat
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false; // Retourneer false als de gebruiker niet bestaat
     }
 }

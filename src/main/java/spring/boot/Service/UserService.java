@@ -11,4 +11,6 @@ public interface UserService {
     UserEntity register(UserEntity user);
     ResponseEntity<?> login(String email, String password);
     List<UserDTO> getAllUsers();
+
+    boolean deleteUser(Long id);
 }
