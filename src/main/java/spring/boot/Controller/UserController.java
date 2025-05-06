@@ -2,6 +2,7 @@ package spring.boot.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import spring.boot.DTO.UserDTO;
 import spring.boot.Entity.UserEntity;
 import spring.boot.Service.UserService;
 import spring.boot.login.LoginRequest;
@@ -29,8 +30,9 @@ public class UserController {
         return userService.login(login.getEmail(), login.getPassword());
     }
 
-    @GetMapping
-    public List<UserEntity> getAllUsers() {
+    @GetMapping("/users")
+    public List<UserDTO> getAllUsers() {
+        System.out.println("Sending: " + userService.getAllUsers());
         return userService.getAllUsers();
     }
 }

@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import spring.boot.DTO.UserDTO;
 import spring.boot.Entity.UserEntity;
 import spring.boot.Repository.UserRepository;
 import spring.boot.Role.UserRole;
@@ -14,8 +15,7 @@ import spring.boot.Service.UserService;
 
 import java.security.Key;
 import java.sql.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -60,16 +60,27 @@ public class UserServiceImpl implements UserService {
         String token = Jwts.builder()
                 .setSubject(email)
                 .claim("roles", userOpt.get().getRoles())
-//                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(key)
                 .compact();
 
-        return ResponseEntity.ok(token);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        System.out.println("Getting All Users!");
+        List<UserEntity> users = userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+
+        for (UserEntity user : users) {
+            UserDTO userDTO = new UserDTO(user.getId(), user.getEmail(), user.getRoles());
+            userDTOs.add(userDTO);
+        }
+
+        return userDTOs;
     }
 }

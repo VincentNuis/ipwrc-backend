@@ -2,11 +2,14 @@ package spring.boot.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,14 +25,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and()
-                .csrf().disable() // CSRF uitschakelen voor API's die geen sessie gebruiken
-                .authorizeRequests()
-                .requestMatchers("/api/users/login", "/api/users/register", "/public/**").permitAll() // Toegestaan zonder authenticatie
-                .anyRequest().authenticated() // Alle andere verzoeken moeten geauthenticeerd zijn
-                .and()
-                .formLogin().disable() // Uitschakelen van form-login
-                .httpBasic().disable(); // Uitschakelen van basic auth, indien nodig voor je API
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/users/login", "/api/users/register", "/public/**").permitAll()  // Open voor iedereen
+                        .requestMatchers(HttpMethod.GET, "/api/users/users").hasRole("ADMIN") // Alleen voor ADMIN
+                        .anyRequest().authenticated()  // Andere routes moeten geauthenticeerd zijn
+                )
+                .formLogin(Customizer.withDefaults())  // Standaard form login uitschakelen (indien gewenst)
+                .httpBasic(httpBasic -> httpBasic.disable());  // HTTP Basic authenticatie uitschakelen
 
         return http.build();
     }

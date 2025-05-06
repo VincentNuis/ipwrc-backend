@@ -21,7 +21,7 @@ public class UserRole implements Serializable {
 
     private String role;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
