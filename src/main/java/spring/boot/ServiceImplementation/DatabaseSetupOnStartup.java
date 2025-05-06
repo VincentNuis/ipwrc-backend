@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import spring.boot.Entity.UserEntity;
+import spring.boot.Repository.ProductRepository;
 import spring.boot.Repository.UserRepository;
 import spring.boot.Role.UserRole;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class DatabaseSetupOnStartup {
 
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PersistenceContext
@@ -28,9 +30,11 @@ public class DatabaseSetupOnStartup {
     private String activeProfile;
 
     public DatabaseSetupOnStartup(UserRepository userRepository,
+                                  ProductRepository productRepository,
                                   PasswordEncoder passwordEncoder,
                                   EntityManager entityManager) {
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
         this.passwordEncoder = passwordEncoder;
         this.entityManager = entityManager;
     }
@@ -42,6 +46,7 @@ public class DatabaseSetupOnStartup {
             if ("dev".equals(activeProfile)) {
                 System.out.println("Cleaning up the database on startup (Development environment)...");
                 userRepository.deleteAll(); // Leeg de gebruikers tabel of voeg andere logica toe
+                productRepository.deleteAll();
 //                resetAutoIncrement();
                 addDefaultAdmin();
             }

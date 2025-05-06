@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import spring.boot.Entity.ProductEntity;
 import spring.boot.Service.ProductService;
+import spring.boot.login.ProductRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +31,6 @@ public class ProductController {
         product.setCategory(category);
         product.setPrice(price);
 
-        // Zet afbeelding om naar byte[] en sla op
         product.setImage(image.getBytes());
 
         ProductEntity savedProduct = productService.addProduct(product);
@@ -42,4 +42,38 @@ public class ProductController {
     public List<ProductEntity> getAllProducts() {
         return productService.getAllProducts();  // Haalt de producten op van de service
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductEntity> updateProduct(
+            @PathVariable("id") Long id,
+            @RequestBody ProductRequest productRequest) throws IOException {
+
+        ProductEntity product = productService.getProductById(id);
+        if (product == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Product niet gevonden
+        }
+
+        if (productRequest.getName() != null && !productRequest.getName().isEmpty()) {
+            product.setName(productRequest.getName());
+        }
+        if (productRequest.getPrice() != null) {
+            product.setPrice(productRequest.getPrice());
+        }
+
+        ProductEntity updatedProduct = productService.updateProduct(product);
+
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id) {
+        boolean isDeleted = productService.deleteProductById(id);
+
+        if (isDeleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

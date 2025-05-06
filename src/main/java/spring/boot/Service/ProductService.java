@@ -7,16 +7,10 @@ import spring.boot.Repository.ProductRepository;
 
 import java.util.List;
 
-@Service
-public class ProductService {
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    public ProductEntity addProduct(ProductEntity productEntity) {
-        return productRepository.save(productEntity);  // Slaat het product op in de database
-    }
-    public List<ProductEntity> getAllProducts() {
-        return productRepository.findAll();  // Haalt alle producten op uit de database
-    }
+public interface ProductService {
+    ProductEntity addProduct(ProductEntity product);
+    List<ProductEntity> getAllProducts();
+    ProductEntity getProductById(Long id);
+    ProductEntity updateProduct(ProductEntity product);
+    boolean deleteProductById(Long id);
 }

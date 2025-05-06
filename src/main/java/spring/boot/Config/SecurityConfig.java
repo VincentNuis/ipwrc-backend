@@ -8,14 +8,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import spring.boot.jwt.JwtAuthenticationFilter;
 import spring.boot.jwt.JwtTokenProvider;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -39,32 +45,31 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/login", "/api/users/register", "/public/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()// Open voor iedereen
+                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN") // Alleen voor ADMIN
-                        .anyRequest().authenticated()  // Andere routes moeten geauthenticeerd zijn
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .formLogin(Customizer.withDefaults())  // Standaard form login uitschakelen (indien gewenst)
-                .httpBasic(httpBasic -> httpBasic.disable());  // HTTP Basic authenticatie uitschakelen
+                .formLogin(AbstractHttpConfigurer::disable)  // Standaard form login uitschakelen (indien gewenst)
+                .httpBasic(AbstractHttpConfigurer::disable);  // HTTP Basic authenticatie uitschakelen
 
         return http.build();
     }
 
-    // CORS configureren
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")  // Sta verzoeken van localhost:4200 toe
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);  // Optioneel als je cookies/sessies wilt toestaan
-            }
-        };
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);  // Alleen als je cookies gebruikt
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
