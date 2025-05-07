@@ -16,7 +16,6 @@ public class JwtTokenProvider {
 
     // Genereer een JWT-token
     public String generateToken(String email, List<UserRole> roles) {
-        System.out.println("Generating Token...");
         return Jwts.builder()
                 .subject(email)
                 .claim("roles", roles)
@@ -28,7 +27,6 @@ public class JwtTokenProvider {
 
     // Haal de claims uit het token
     public Claims getClaims(String token) {
-        System.out.print("Getting Claims...");
         return Jwts.parser() // Gebruik parserBuilder() in plaats van parser()
                 .verifyWith(key) // Stel de signing key in
                 .build()
@@ -44,10 +42,8 @@ public class JwtTokenProvider {
 
             // Valideer de vervaldatum
             if (claims.getExpiration().before(new Date())) {
-                System.out.println("Token verlopen...");
                 return false;  // Token is verlopen
             }
-            System.out.println("Token Geldig...");
             return true; // Token is geldig
         } catch (Exception e) {
             return false; // Token is ongeldig of expired

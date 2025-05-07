@@ -23,7 +23,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserEntity user) {
-        System.out.println("Registrating new User");
         return ResponseEntity.ok(userService.register(user));
     }
 
@@ -34,7 +33,6 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
-        System.out.println("Sending: " + userService.getAllUsers());
         return userService.getAllUsers();
     }
 

@@ -32,14 +32,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductEntity updateProduct(ProductEntity product) {
-        System.out.println("updating:...");
-        return productRepository.save(product);  // save werkt ook voor updates
+        return productRepository.save(product);
     }
 
     @Override
     public boolean deleteProductById(Long id) {
         if (productRepository.existsById(id)) {
-            System.out.println("deleted");
             productRepository.deleteById(id);
             return true;
         }

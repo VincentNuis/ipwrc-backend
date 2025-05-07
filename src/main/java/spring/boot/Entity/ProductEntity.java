@@ -22,5 +22,5 @@ public class ProductEntity {
 
     @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")
-    private byte[] image;  // afbeelding als byte array
+    private byte[] image;
 }

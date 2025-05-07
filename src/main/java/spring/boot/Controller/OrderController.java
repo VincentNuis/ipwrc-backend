@@ -19,7 +19,6 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderEntity order) {
-        System.out.println("Received order: " + order);
         OrderEntity savedOrder = orderService.saveOrder(order);
         return ResponseEntity.ok(savedOrder);
     }

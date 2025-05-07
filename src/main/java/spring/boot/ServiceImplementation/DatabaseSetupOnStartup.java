@@ -13,7 +13,6 @@ import spring.boot.Repository.ProductRepository;
 import spring.boot.Repository.UserRepository;
 import spring.boot.Role.UserRole;
 
-import javax.management.Query;
 import java.util.List;
 
 @Configuration
@@ -45,9 +44,8 @@ public class DatabaseSetupOnStartup {
         return args -> {
             if ("dev".equals(activeProfile)) {
                 System.out.println("Cleaning up the database on startup (Development environment)...");
-                userRepository.deleteAll(); // Leeg de gebruikers tabel of voeg andere logica toe
+                userRepository.deleteAll();
                 productRepository.deleteAll();
-//                resetAutoIncrement();
                 addDefaultAdmin();
             }
         };
@@ -59,7 +57,6 @@ public class DatabaseSetupOnStartup {
     }
 
     private void addDefaultAdmin() {
-        // Controleer of de admin al bestaat
         if (userRepository.findByEmail("admin").isEmpty()) {
             UserEntity admin = new UserEntity();
             admin.setEmail("admin");
@@ -71,7 +68,6 @@ public class DatabaseSetupOnStartup {
 
             admin.setRoles(List.of(adminRole));
 
-            // Sla de admin gebruiker op
             userRepository.save(admin);
             System.out.println("Default admin added: admin");
         } else {

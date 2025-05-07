@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
             defaultRole.setUser(user);
             user.setRoles(List.of(defaultRole));
         } else {
-            // Koppel bestaande roles aan deze user
             for (UserRole role : user.getRoles()) {
                 role.setUser(user);
             }
@@ -90,13 +89,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUser(Long id) {
-        // Controleer of de gebruiker bestaat
         if (userRepository.existsById(id)) {
-            // Verwijder de gebruiker als deze bestaat
             userRepository.deleteById(id);
             return true;
         }
-        return false; // Retourneer false als de gebruiker niet bestaat
+        return false;
     }
 
     @Override
