@@ -1,7 +1,9 @@
 plugins {
+    id 'org.springframework.boot' version '3.1.0' // Voeg de Spring Boot-plugin toe
+    id 'io.spring.dependency-management' version '1.1.0' // Beheer Spring Boot dependencies
     id 'groovy'
     id 'java'
-    }
+}
 
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -11,25 +13,39 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.4.4'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.4.4'
-    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.4.4'
+    // Spring Boot Web Starter
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Spring Boot JPA Starter
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // MySQL Connector
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    // Spring Boot Security Starter
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Unirest HTTP Client
     implementation 'com.konghq:unirest-java:3.14.1'
+    // Groovy
     implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+    // Lombok
     implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    // JWT (JSON Web Token)
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+    // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+                'Main-Class': 'spring.boot.Main' // Replace with your main class
+        )
+    }
 }
