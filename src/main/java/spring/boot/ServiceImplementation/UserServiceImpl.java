@@ -98,4 +98,9 @@ public class UserServiceImpl implements UserService {
         }
         return false; // Retourneer false als de gebruiker niet bestaat
     }
+
+    @Override
+    public UserEntity getUserById(Long userId) {
+        return null;
+    }
 }
