@@ -21,11 +21,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import spring.boot.jwt.JwtAuthenticationFilter;
 import spring.boot.jwt.JwtTokenProvider;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+        private static final String DB_URL = System.getenv("DB_URL");
+        private static final String DB_USERNAME = System.getenv("DB_USERNAME");
+        private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
+
+        public static Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        }
+    
 
     private final JwtTokenProvider jwtTokenProvider;
 
