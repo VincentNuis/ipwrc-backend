@@ -57,7 +57,7 @@ jobs:
       
       - name: Verify JAR file exists
         run: |
-            ls -l a/ipwrc-backend/build/libs
+            ls -l ./../build/libs
             ls -l site/wwwroot/
       - name: Run JAR locally (optional test)
         run: java -jar site/wwwroot/SpringBoot-1.0-SNAPSHOT.jar
