@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://orange-water-04e1e9403.6.azurestaticapps.net")
 public class UserController {
 
     private final UserService userService;
