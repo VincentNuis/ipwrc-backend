@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://mysql-school-webshop-school-webshop.d.aivencloud.com:22637/webshop
+    username: avnadmin
+    password: AVNS_mJkYLpEnF07B4xvnNwE
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
