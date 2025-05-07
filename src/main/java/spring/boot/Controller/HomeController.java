@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/")
-    public String home() {
-        return "Spring Boot is live on Railway!";
-    }
+//    @GetMapping("/")
+//    public String home() {
+//        return "Spring Boot is live on Railway!";
+//    }
 }
